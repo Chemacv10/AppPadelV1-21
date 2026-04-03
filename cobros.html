@@ -112,7 +112,10 @@
     </div>
   </main>
 
-  <button class="fab" onclick="abrirNuevoCobro()">+</button>
+  <button class="btn-anadir" onclick="abrirNuevoCobro()" style="margin:0 11px 10px">
+    <div class="btn-anadir-plus">+</div>
+    Añadir cobro
+  </button>
 
   <!-- Sheet: Nuevo / Editar cobro -->
   <div class="overlay" id="sh-cobro">
@@ -259,8 +262,11 @@ function setTab(tab) {
 
 // ── Año ───────────────────────────────────────
 function poblarAnioSel(){
+  const anioHoy=new Date().getFullYear();
   const anios=[..._cobros.reduce((s,co)=>{const a=new Date(co.fecha||0).getFullYear();if(a>2000)s.add(a);return s;},new Set())].sort((a,b)=>b-a);
-  const anioAct=_anioActual||(anios[0]||new Date().getFullYear());
+  if(!anios.includes(anioHoy)) anios.unshift(anioHoy);
+  const anioAct=_anio||anioHoy;
+  _anio=anioAct;
   const lbl=document.getElementById('anio-lbl');
   const drop=document.getElementById('anio-drop');
   if(lbl)lbl.textContent=anioAct;
@@ -609,15 +615,17 @@ async function init(){
     const alumno = _alumnos.find(a => a.id === _alumnoFiltId);
     const nombre = alumno?.nombre || 'Alumno';
     renderHeader({
-      titulo: 'Cobros', subtitulo: nombre,
+      titulo: nombre, subtitulo: 'Cobros',
       icono: 'icons/mensual.png', botonDerecho: 'back', onBack: 'alumnos.html',
     });
     // Ocultar buscador de alumno — no tiene sentido estando prefiltrado
     const bw = document.getElementById('buscador-cobros-wrap');
     if(bw) bw.style.display = 'none';
-    // Ocultar botón generar
+    // Ocultar botón generar y selector de año (no aplica vista por alumno)
     const btnGen = document.querySelector('.btn-generar-mes');
     if(btnGen) btnGen.style.display = 'none';
+    const anioNav = document.querySelector('.anio-nav');
+    if(anioNav) anioNav.style.display = 'none';
     document.getElementById('co-alumno').value = _alumnoFiltId;
     setTab('lista');
   } else {
