@@ -135,6 +135,11 @@
       
 <div class="sec-count" id="contador">—</div>
     </div>
+    <button class="btn-anadir" onclick="abrirWizard()" style="margin:0 0 10px">
+      <div class="btn-anadir-plus">+</div>
+      Nueva clase
+    </button>
+
     <!-- Buscador -->
     <div class="search">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -193,11 +198,6 @@
     </div>
     <div id="lista-clases"><div class="loading"><div class="spinner"></div></div></div>
   </main>
-
-  <button class="btn-anadir" onclick="abrirWizard()" style="margin:0 15px 10px">
-      <div class="btn-anadir-plus">+</div>
-      Nueva clase
-    </button>
 
   <!-- WIZARD -->
   <div class="overlay" id="wizard-overlay">
@@ -448,6 +448,7 @@ function _renderPistaCsel(pistaActual) {
 const ESTADO_COLOR={Programada:'#2563eb',Realizada:'#16a34a',Suspendida:'#e05a5a',Festivo:'#f59e0b'};
 const ESTADO_CHIP={Programada:'caz',Realizada:'cvd',Suspendida:'crd',Festivo:'cam'};
 const ICONO_CAT={Calentamiento:'icons/calentamiento.png',Carritos:'icons/carritos.png',Situaciones:'icons/situaciones.png',Partiditos:'icons/partiditos.png'};
+const ICONO_ESTADO={Programada:'icons/programada.png',Realizada:'icons/realizada.png',Suspendida:'icons/suspendida.png',Festivo:'icons/festivo.png'};
 const CATS=['Calentamiento','Carritos','Situaciones','Partiditos'];
 const ESTADOS_SIMPLES=['Suspendida','Festivo'];
 
@@ -513,7 +514,11 @@ function renderLista(lista){
     return `
     <div class="card" id="card-${c.id}">
       <div class="card-main" onclick="toggleCard('${c.id}')">
-        <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:10px;min-width:0">
+          <div style="width:40px;height:40px;border-radius:10px;background:#f8fafc;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <img src="${ICONO_ESTADO[c.estado]||'icons/todos_clase.png'}" style="width:36px;height:36px;object-fit:contain">
+          </div>
+          <div style="flex:1;min-width:0">
           <div class="clase-fecha">${formatFecha(c.fecha)}${hora?' · '+hora:''}</div>
           <div class="clase-meta">
             <div class="clase-dot" style="background:${color}"></div>
@@ -521,6 +526,7 @@ function renderLista(lista){
             <span class="clase-estado" style="color:${color}">${c.estado}</span>
           </div>
           <div class="clase-resumen">${asist.length?asist.length+' asistentes · ':''}${bloqs.length?bloqs.length+' bloques · ':''}${dur}${c.pista?' · 🏟 '+c.pista:''}</div>
+          </div>
         </div>
         <div class="chev" id="chev-${c.id}">▼</div>
       </div>

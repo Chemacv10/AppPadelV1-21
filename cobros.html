@@ -73,6 +73,11 @@
       <div class="sec-count" id="contador">—</div>
     </div>
 
+    <button class="btn-anadir" onclick="abrirNuevoCobro()" style="margin:0 11px 10px">
+      <div class="btn-anadir-plus">+</div>
+      Añadir cobro
+    </button>
+
     <div class="kpi-row" id="kpi-row"></div>
 
     <div class="anio-nav">
@@ -104,18 +109,24 @@
 
     <!-- VISTA HISTORIAL -->
     <div id="vista-lista" style="display:none">
-      <div class="filtros-barra" id="filtros-tipo"></div>
+      <div style="padding:0 11px 8px">
+        <div style="font-size:10px;font-weight:900;color:#2563eb;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">Tipo de cobro</div>
+        <select id="filtro-tipo-sel" style="display:none" onchange="setFiltroTipo(this.value)">
+          <option value="">Todos</option>
+          <option value="Mensual">Mensual</option>
+          <option value="Particular">Particular</option>
+          <option value="Matrícula">Matrícula</option>
+          <option value="Bono">Bono</option>
+          <option value="Libre">Libre</option>
+        </select>
+        <div class="nsel-wrap" id="filtro-tipo-sel-nsel"></div>
+      </div>
       <div id="buscador-cobros-wrap" style="padding:0 11px 6px">
         <input class="finp" id="buscador-cobros" type="text" placeholder="Buscar alumno…" oninput="filtrarLista()" style="margin-bottom:0">
       </div>
       <div id="lista-cobros" style="padding:0 11px"></div>
     </div>
   </main>
-
-  <button class="btn-anadir" onclick="abrirNuevoCobro()" style="margin:0 11px 10px">
-    <div class="btn-anadir-plus">+</div>
-    Añadir cobro
-  </button>
 
   <!-- Sheet: Nuevo / Editar cobro -->
   <div class="overlay" id="sh-cobro">
@@ -359,11 +370,12 @@ function renderDetalleMes() {
 
 // ── Historial ─────────────────────────────────
 function renderFiltrosTipo() {
-  const tipos=['','Mensual','Particular','Matrícula','Bono','Libre'];
-  const labels=['Todos','Mensual','Particular','Matrícul.','Bono','Libre'];
-  document.getElementById('filtros-tipo').innerHTML=tipos.map((t,i)=>
-    `<button class="fbtn ${_filtroTipo===t?'active':''}" onclick="setFiltroTipo('${t}')">${labels[i]}</button>`
-  ).join('');
+  // Sincronizar el select nativo con el filtro actual
+  const sel = document.getElementById('filtro-tipo-sel');
+  if (sel) {
+    sel.value = _filtroTipo;
+    nselSync('filtro-tipo-sel');
+  }
 }
 function setFiltroTipo(t){_filtroTipo=t;renderFiltrosTipo();filtrarLista();}
 
@@ -636,6 +648,7 @@ async function init(){
   // ── Inicializar selects custom ──
   nselInit('co-alumno');
   nselInit('co-tipo');
+  nselInit('filtro-tipo-sel');
   nselInit('co-mes');
   nselInit('co-forma');
   nselInit('gen-mes');

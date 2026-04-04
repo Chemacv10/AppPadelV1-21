@@ -28,13 +28,16 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       <input id="buscador" type="text" placeholder="Buscar por nombre…" oninput="filtrar()">
     </div>
-    <div class="filter-label">Tipo</div>
-    <div class="filters f5">
-      <div class="fbtn active" data-value="" onclick="sf(this)"><img src="icons/todos.png"><div class="flabel">Todos</div></div>
-      <div class="fbtn" data-value="Americano"   onclick="sf(this)"><img src="icons/americano.png"><div class="flabel">Americ.</div></div>
-      <div class="fbtn" data-value="Mexicano"    onclick="sf(this)"><img src="icons/mexicano.png"><div class="flabel">Mexic.</div></div>
-      <div class="fbtn" data-value="Escalera"    onclick="sf(this)"><img src="icons/escalera.png"><div class="flabel">Escal.</div></div>
-      <div class="fbtn" data-value="Round Robin" onclick="sf(this)"><img src="icons/robin.png"><div class="flabel">Robin</div></div>
+    <div style="padding:0 0 10px">
+      <div class="filter-label">Tipo</div>
+      <select id="filtro-tipo-torneo" style="display:none" onchange="sfFromSel(this.value)">
+        <option value="">Todos</option>
+        <option value="Americano">Americano</option>
+        <option value="Mexicano">Mexicano</option>
+        <option value="Escalera">Escalera</option>
+        <option value="Round Robin">Round Robin</option>
+      </select>
+      <div class="nsel-wrap" id="filtro-tipo-torneo-nsel"></div>
     </div>
 
     <div id="lista-torneos"><div class="loading"><div class="spinner"></div></div></div>
@@ -175,6 +178,10 @@ const ICONO = { Americano:'icons/americano.png', Escalera:'icons/escalera.png',
 function sf(btn) {
   btn.closest('.filters').querySelectorAll('.fbtn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active'); _filtro = btn.dataset.value||''; filtrar();
+}
+function sfFromSel(val) {
+  _filtro = val;
+  filtrar();
 }
 
 function filtrar() {
@@ -539,6 +546,7 @@ async function init() {
 
   // ── Inicializar selects custom ──
   nselInit('to-tipo');
+  nselInit('filtro-tipo-torneo');
 }
 init();
 </script>

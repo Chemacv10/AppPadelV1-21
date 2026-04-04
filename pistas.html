@@ -40,6 +40,11 @@
 <div class="sec-count" id="contador">—</div>
     </div>
 
+    <button class="btn-anadir" onclick="abrirNuevaSemana()" style="margin:0 11px 10px">
+      <div class="btn-anadir-plus">+</div>
+      Añadir semana
+    </button>
+
     <div class="periodo-tabs">
       <div class="ptab active" onclick="sf(this,'actual')">Actual</div>
       <div class="ptab" onclick="sf(this,'pasadas')">Pasadas</div>
@@ -54,7 +59,7 @@
     <div id="lista-semanas"><div class="loading"><div class="spinner"></div></div></div>
   </main>
 
-  <button class="fab" onclick="abrirNuevaSemana()">+</button>
+
 
   <div class="overlay" id="sh-semana">
     <div class="sheet">

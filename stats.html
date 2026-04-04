@@ -66,19 +66,19 @@
       <div class="sec-title">Estadísticas <button onclick="abrirInfo()" style="background:none;border:none;color:#2563eb;font-size:13px;font-weight:800;cursor:pointer;padding:0;font-family:Nunito,sans-serif">Info.</button></div>
     </div>
 
-    <!-- Sección — iconos fbtn igual que el resto de la app -->
-    <div class="filter-label">Sección</div>
-    <div class="filters f4">
-      <div class="fbtn active" data-sec="general"    onclick="sfSec(this)"><img src="icons/inicio.png"><div class="flabel">General</div></div>
-      <div class="fbtn"        data-sec="alumnos"    onclick="sfSec(this)"><img src="icons/alumnos.png"><div class="flabel">Alumnos</div></div>
-      <div class="fbtn"        data-sec="grupos"     onclick="sfSec(this)"><img src="icons/grupos.png"><div class="flabel">Grupos</div></div>
-      <div class="fbtn"        data-sec="ejercicios" onclick="sfSec(this)"><img src="icons/ejercicios.png"><div class="flabel">Ejerc.</div></div>
-    </div>
-    <div class="filters f4" style="margin-top:3px">
-      <div class="fbtn" data-sec="clases"     onclick="sfSec(this)"><img src="icons/clases.png"><div class="flabel">Clases</div></div>
-      <div class="fbtn" data-sec="torneos"    onclick="sfSec(this)"><img src="icons/torneos.png"><div class="flabel">Torneos</div></div>
-      <div class="fbtn" data-sec="cobros"     onclick="sfSec(this)"><img src="icons/mensual.png"><div class="flabel">Cobros</div></div>
-      <div class="fbtn" data-sec="pistas"     onclick="sfSec(this)"><img src="icons/pistas.png"><div class="flabel">Pistas</div></div>
+    <!-- Sección -->
+    <div style="padding:0 0 8px">
+      <div class="filter-label">Sección</div>
+      <select id="sel-seccion" style="display:none" onchange="sfSecFromSel(this.value)">
+        <option value="general">General</option>
+        <option value="alumnos">Alumnos</option>
+        <option value="grupos">Grupos</option>
+        <option value="ejercicios">Ejercicios</option>
+        <option value="clases">Clases</option>
+        <option value="cobros">Cobros</option>
+        <option value="pistas">Pistas</option>
+      </select>
+      <div class="nsel-wrap" id="sel-seccion-nsel"></div>
     </div>
 
     <!-- Filtros Mes + Año -->
@@ -137,6 +137,10 @@ function sfSec(btn) {
   document.querySelectorAll('[data-sec]').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   _seccion = btn.dataset.sec;
+  renderStats();
+}
+function sfSecFromSel(val) {
+  _seccion = val;
   renderStats();
 }
 function sfFecha() {
@@ -767,6 +771,7 @@ async function init() {
   // ── Inicializar selects custom ──
   nselInit('sel-mes');
   nselInit('sel-anio');
+  nselInit('sel-seccion');
 }
 function abrirInfo() {
   openSheet('sh-info-pagina');
