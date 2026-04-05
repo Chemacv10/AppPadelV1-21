@@ -292,27 +292,40 @@ function actualizarFiltrosNivel() {
 
 // ── Foto ───────────────────────────────────────
 // ── Avatares disponibles ──
-const AVATARES = [
-  'icons/av_f01.png','icons/av_f02.png','icons/av_f03.png','icons/av_f04.png',
-  'icons/av_f05.png','icons/av_f06.png','icons/av_f07.png','icons/av_f08.png',
-  'icons/av_f09.png','icons/av_f10.png','icons/av_f11.png','icons/av_f12.png',
-  'icons/av_f13.png',
-  'icons/av_m01.png','icons/av_m02.png','icons/av_m03.png','icons/av_m04.png',
-  'icons/av_m05.png','icons/av_m06.png','icons/av_m07.png','icons/av_m08.png',
-  'icons/av_m09.png','icons/av_m10.png','icons/av_m11.png','icons/av_m12.png',
-  'icons/av_m13.png','icons/av_m14.png','icons/av_m15.png',
-];
+const AVATARES_H = Array.from({length:16}, (_,i) => `icons/av_m${String(i+1).padStart(2,'0')}.png`);
+const AVATARES_M = Array.from({length:16}, (_,i) => `icons/av_f${String(i+1).padStart(2,'0')}.png`);
 let _avatarSeleccionado = null;
+let _filtroAvatar = 'h';
+
+function filtrarAvatares(tipo) {
+  _filtroAvatar = tipo;
+  const btnH = document.getElementById('btn-filtro-h');
+  const btnM = document.getElementById('btn-filtro-m');
+  if (tipo === 'h') {
+    btnH.style.background='#2563eb'; btnH.style.color='#fff'; btnH.style.borderColor='#2563eb';
+    btnM.style.background='#f8fafc'; btnM.style.color='#64748b'; btnM.style.borderColor='#e2e8f0';
+  } else {
+    btnM.style.background='#2563eb'; btnM.style.color='#fff'; btnM.style.borderColor='#2563eb';
+    btnH.style.background='#f8fafc'; btnH.style.color='#64748b'; btnH.style.borderColor='#e2e8f0';
+  }
+  renderAvatarGrid();
+}
+
+function renderAvatarGrid() {
+  const lista = _filtroAvatar === 'h' ? AVATARES_H : AVATARES_M;
+  const grid = document.getElementById('avatares-grid');
+  grid.innerHTML = lista.map(src => `
+    <div onclick="selAvatar(this,'${src}')" style="aspect-ratio:1;border-radius:12px;overflow:hidden;cursor:pointer;border:2.5px solid transparent;transition:all .12s">
+      <img src="${src}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.style.display='none'">
+    </div>`).join('');
+}
 
 function abrirSelectorFoto() {
   _avatarSeleccionado = null;
-  // Renderizar grid de avatares
-  const grid = document.getElementById('avatares-grid');
-  grid.innerHTML = AVATARES.map(src => `
-    <div onclick="selAvatar(this,'${src}')" style="aspect-ratio:1;border-radius:50%;overflow:hidden;cursor:pointer;border:2.5px solid transparent;transition:all .12s;position:relative">
-      <img src="${src}" style="width:100%;height:100%;object-fit:cover">
-    </div>`).join('');
+  _filtroAvatar = 'h';
   openSheet('sh-foto-avatar');
+  // Resetear botones
+  setTimeout(() => { filtrarAvatares('h'); }, 50);
 }
 
 function selAvatar(el, src) {
@@ -545,25 +558,36 @@ init();
       <div style="overflow-y:auto;flex:1;padding:0 16px">
         <!-- Cámara / Galería -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px">
-          <button onclick="elegirCamara()" style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:14px;padding:16px 12px;display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;font-family:Nunito,sans-serif;transition:all .15s" onmouseenter="this.style.background='#eff6ff'" onmouseleave="this.style.background='#f8fafc'">
+          <button onclick="elegirCamara()" style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:14px;padding:16px 12px;display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;font-family:Nunito,sans-serif">
             <img src="icons/camara.png" style="width:44px;height:44px;object-fit:contain">
             <span style="font-size:13px;font-weight:800;color:#475569">Cámara</span>
           </button>
-          <button onclick="elegirGaleria()" style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:14px;padding:16px 12px;display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;font-family:Nunito,sans-serif;transition:all .15s" onmouseenter="this.style.background='#eff6ff'" onmouseleave="this.style.background='#f8fafc'">
+          <button onclick="elegirGaleria()" style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:14px;padding:16px 12px;display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;font-family:Nunito,sans-serif">
             <img src="icons/galeria.png" style="width:44px;height:44px;object-fit:contain">
             <span style="font-size:13px;font-weight:800;color:#475569">Galería</span>
           </button>
         </div>
         <!-- Avatares -->
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
           <div style="flex:1;height:1px;background:#e2e8f0"></div>
           <span style="font-size:10px;font-weight:900;color:#94a3b8;text-transform:uppercase;letter-spacing:.6px">O elige un avatar</span>
           <div style="flex:1;height:1px;background:#e2e8f0"></div>
         </div>
-        <div id="avatares-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding-bottom:12px"></div>
+        <!-- Filtro H/M -->
+        <div style="display:flex;gap:8px;margin-bottom:14px">
+          <button id="btn-filtro-h" onclick="filtrarAvatares('h')"
+            style="flex:1;padding:9px;border-radius:10px;border:2px solid #2563eb;background:#2563eb;color:#fff;font-family:Nunito,sans-serif;font-size:13px;font-weight:900;cursor:pointer">
+            👨 Hombres
+          </button>
+          <button id="btn-filtro-m" onclick="filtrarAvatares('m')"
+            style="flex:1;padding:9px;border-radius:10px;border:2px solid #e2e8f0;background:#f8fafc;color:#64748b;font-family:Nunito,sans-serif;font-size:13px;font-weight:900;cursor:pointer">
+            👩 Mujeres
+          </button>
+        </div>
+        <div id="avatares-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding-bottom:12px"></div>
       </div>
       <div style="padding:12px 16px 0;flex-shrink:0">
-        <button id="btn-confirmar-foto" onclick="confirmarFoto()" style="width:100%;padding:13px;background:#2563eb;color:#fff;border:none;border-radius:14px;font-family:Nunito,sans-serif;font-size:14px;font-weight:900;cursor:pointer;box-shadow:0 4px 14px rgba(37,99,235,.3)">Confirmar</button>
+        <button onclick="confirmarFoto()" style="width:100%;padding:13px;background:#2563eb;color:#fff;border:none;border-radius:14px;font-family:Nunito,sans-serif;font-size:14px;font-weight:900;cursor:pointer;box-shadow:0 4px 14px rgba(37,99,235,.3)">Confirmar</button>
       </div>
     </div>
   </div>

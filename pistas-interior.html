@@ -6,7 +6,7 @@
   <title>Pistas — Semana</title>
   <link rel="stylesheet" href="css/style.css">
   <style>
-    .dias-tabs{display:flex;gap:3px;padding:8px 11px 4px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .dias-tabs{display:flex;gap:3px;padding:8px 11px 4px;flex-wrap:wrap}
     .dia-tab{flex-shrink:0;min-width:42px;padding:6px 4px;border-radius:9px;border:1.5px solid var(--borde);background:var(--card);text-align:center;cursor:pointer;transition:all .15s}
     .dia-tab.active{background:var(--azul);border-color:var(--azul)}
     .dia-tab .dl{font-size:9px;font-weight:900;text-transform:uppercase;color:var(--sub)}
@@ -45,7 +45,7 @@
     .nuevo-inline .sbtn{padding:9px 12px;min-width:0;flex-shrink:0}
 
     /* ── Pestañas Semana / Pista 1 / Pista 2... ── */
-    .pistas-tabs{display:flex;background:var(--card);border-bottom:2px solid var(--borde);overflow-x:auto;flex-shrink:0}
+    .pistas-tabs{display:flex;background:var(--card);border-bottom:2px solid var(--borde);flex-wrap:wrap;flex-shrink:0}
     .pistas-tabs::-webkit-scrollbar{display:none}
     .ptab-btn{padding:8px 14px;font-size:12px;font-weight:800;color:var(--sutil);border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;font-family:Nunito,sans-serif;flex-shrink:0}
     .ptab-btn.active{color:var(--azul);border-bottom-color:var(--azul)}

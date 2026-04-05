@@ -214,12 +214,13 @@
         </div>
         <div style="padding:0 15px;margin-bottom:12px">
           <div class="flbl" style="margin-bottom:6px">Estado *</div>
-          <div class="estado-grid">
-            <button class="estado-btn sel-Programada" onclick="selEstado(this,'Programada')"><img src="icons/programada.png">Programada</button>
-            <button class="estado-btn" onclick="selEstado(this,'Realizada')"><img src="icons/realizada.png">Realizada</button>
-            <button class="estado-btn" onclick="selEstado(this,'Suspendida')"><img src="icons/suspendida.png">Suspendida</button>
-            <button class="estado-btn" onclick="selEstado(this,'Festivo')"><img src="icons/festivo.png">Festivo</button>
-          </div>
+          <select id="cl-estado-sel" style="display:none" onchange="selEstadoFromSel(this.value)">
+            <option value="Programada">Programada</option>
+            <option value="Realizada">Realizada</option>
+            <option value="Suspendida">Suspendida</option>
+            <option value="Festivo">Festivo</option>
+          </select>
+          <div class="nsel-wrap" id="cl-estado-sel-nsel"></div>
         </div>
         <div class="frow">
           <div class="fgrp">
@@ -335,12 +336,7 @@
           <div class="wizard-sub">Revisa y ajusta los bloques</div>
         </div>
         <div id="bloques-container" style="padding:0 15px"></div>
-        <div class="add-bloques" style="padding:0 15px">
-          <button class="add-blq" onclick="addBloque('Calentamiento')"><img src="icons/calentamiento.png">+ Calent.</button>
-          <button class="add-blq" onclick="addBloque('Carritos')"><img src="icons/carritos.png">+ Carrito</button>
-          <button class="add-blq" onclick="addBloque('Situaciones')"><img src="icons/situaciones.png">+ Situac.</button>
-          <button class="add-blq" onclick="addBloque('Partiditos')"><img src="icons/partiditos.png">+ Partit.</button>
-        </div>
+
         <div class="wizard-btns">
           <button class="wbtn" onclick="irFase(3)">← Atrás</button>
           <button class="wbtn verde" onclick="guardar()">💾 Guardar clase</button>
@@ -573,6 +569,9 @@ function abrirWizard(){
   fillTipoClaseSelect('Grupo');
   document.querySelectorAll('.estado-btn').forEach(b=>b.className='estado-btn');
   document.querySelectorAll('.estado-btn')[0].classList.add('sel-Programada');
+  // Sincronizar nsel de estado
+  const selEl = document.getElementById('cl-estado-sel');
+  if(selEl) { selEl.value = _estadoSel; nselSync('cl-estado-sel'); }
   openSheet('wizard-overlay');
   irFase(1);
 }
@@ -595,12 +594,19 @@ function abrirEditar(c){
   if(!ESTADOS_SIMPLES.includes(c.estado)){
     _bloques=(c.clase_ejercicios||[]).map(b=>({ejercicio_id:b.ejercicio_id,nombre:b.ejercicios?.nombre||'',categoria:b.ejercicios?.categoria||'',orden:b.orden,duracion:b.duracion||'15 min',realizado:b.realizado!==false}));
   }
+  const selEl2 = document.getElementById('cl-estado-sel');
+  if(selEl2) { selEl2.value = _estadoSel; nselSync('cl-estado-sel'); }
   openSheet('wizard-overlay');
   irFase(1);
 }
 
 function cerrarWizard(){closeSheet('wizard-overlay')}
 // click en overlay → gestionado por ui.js
+
+function selEstadoFromSel(val) {
+  _estadoSel = val;
+  irFase(1);
+}
 
 function irFase(n){
   for(let i=1;i<=4;i++)document.getElementById('fase-'+i).style.display='none';
@@ -623,8 +629,10 @@ function irFase(n){
 }
 
 function selEstado(btn,estado){
-  document.querySelectorAll('.estado-btn').forEach(b=>b.className='estado-btn');
-  btn.classList.add('sel-'+estado);_estadoSel=estado;irFase(1);
+  _estadoSel=estado;
+  const sel=document.getElementById('cl-estado-sel');
+  if(sel){sel.value=estado;nselSync('cl-estado-sel');}
+  irFase(1);
 }
 
 async function cargarAsistencia(){
@@ -1009,6 +1017,7 @@ async function init(){
   nselInit('filtro-grupo');
   nselInit('cl-grupo');
   nselInit('cl-duracion');
+  nselInit('cl-estado-sel');
 }
 
 function _diffMin(h1, h2){
